@@ -5,6 +5,7 @@ import com.helpdesk_ticketing_system.tickets_data_management.entities.Ticket;
 import com.helpdesk_ticketing_system.tickets_data_management.entities.TicketDocument;
 import com.helpdesk_ticketing_system.tickets_data_management.entities.TicketRequest;
 import com.helpdesk_ticketing_system.tickets_data_management.persistence.repository.TicketDao;
+import com.helpdesk_ticketing_system.tickets_data_management.utilities.Utilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,16 +14,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Stack;
-
 @RestController
 @RequestMapping("/tickets")
 public class TicketController {
     private final TicketDao ticketDao;
+    private final Utilities utilities;
 
     @Autowired
-    public TicketController(TicketDao ticketDao) {
+    public TicketController(TicketDao ticketDao, Utilities utilities) {
         this.ticketDao = ticketDao;
+        this.utilities = utilities;
     }
 
     @PostMapping
@@ -33,7 +34,7 @@ public class TicketController {
         ticket.setMessage(ticketRequest.getMessage());
         ticketDocument.setDepartmentId(ticketRequest.getDepartmentId());
         ticketDocument.setTicket(ticket);
-        //TODO:ticketDocument.set_id();
+        ticketDocument.set_id(utilities.generateId());
         ticketDocument.setStatus(Status.TICKET_RAISED.name());
         ticketDocument.setPostedOn(System.currentTimeMillis());
 
