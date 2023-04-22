@@ -3,6 +3,7 @@ package com.helpdesk_ticketing_system.tickets_data_management.controllers;
 import com.helpdesk_ticketing_system.tickets_data_management.entities.*;
 import com.helpdesk_ticketing_system.tickets_data_management.exceptions_handling.exceptions.InvalidParametersException;
 import com.helpdesk_ticketing_system.tickets_data_management.persistence.repository.TicketDao;
+import com.helpdesk_ticketing_system.tickets_data_management.utilities.Utilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,12 @@ public class TicketController {
     public TicketController(TicketDao ticketDao, @Qualifier("max_pagination_limit") Integer maxPaginationLimit) {
         this.ticketDao = ticketDao;
         MAX_PAGINATION_LIMIT = maxPaginationLimit;
+    private final Utilities utilities;
+
+    @Autowired
+    public TicketController(TicketDao ticketDao, Utilities utilities) {
+        this.ticketDao = ticketDao;
+        this.utilities = utilities;
     }
 
     @PostMapping
@@ -33,7 +40,7 @@ public class TicketController {
         ticket.setMessage(ticketRequest.getMessage());
         ticketDocument.setDepartmentId(ticketRequest.getDepartmentId());
         ticketDocument.setTicket(ticket);
-        //TODO:ticketDocument.set_id();
+        ticketDocument.set_id(utilities.generateId());
         ticketDocument.setStatus(Status.TICKET_RAISED.name());
         ticketDocument.setPostedOn(System.currentTimeMillis());
 
