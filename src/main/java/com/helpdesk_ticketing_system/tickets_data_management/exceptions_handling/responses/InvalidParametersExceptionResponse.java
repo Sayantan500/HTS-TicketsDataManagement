@@ -19,4 +19,14 @@ public class InvalidParametersExceptionResponse {
         this.message = message;
         this.reason = reason;
     }
+
+    @Override
+    public String toString() {
+        return "ExceptionContents{" +
+                "statusCode=" + statusCode +
+                ", param_type=" + param_type +
+                ", message='" + message + '\'' +
+                ", reason='" + reason + '\'' +
+                '}';
+    }
 }
