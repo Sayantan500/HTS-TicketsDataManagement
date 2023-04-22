@@ -19,16 +19,16 @@ import java.util.logging.Logger;
 public class TicketController {
     private final TicketDao ticketDao;
     private final Integer MAX_PAGINATION_LIMIT;
-
-    @Autowired
-    public TicketController(TicketDao ticketDao, @Qualifier("max_pagination_limit") Integer maxPaginationLimit) {
-        this.ticketDao = ticketDao;
-        MAX_PAGINATION_LIMIT = maxPaginationLimit;
     private final Utilities utilities;
 
     @Autowired
-    public TicketController(TicketDao ticketDao, Utilities utilities) {
+    public TicketController(
+            TicketDao ticketDao,
+            @Qualifier("max_pagination_limit") Integer maxPaginationLimit,
+            Utilities utilities
+    ) {
         this.ticketDao = ticketDao;
+        MAX_PAGINATION_LIMIT = maxPaginationLimit;
         this.utilities = utilities;
     }
 
