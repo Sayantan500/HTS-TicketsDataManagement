@@ -34,7 +34,6 @@ public class TicketController {
 
     @PostMapping
     public ResponseEntity<Object> saveTicket(@RequestBody TicketRequest ticketRequest) throws Exception {
-        System.out.println("ticketRequest = " + ticketRequest);
         TicketDocument ticketDocument=new TicketDocument();
         Ticket ticket=new Ticket();
         ticket.setMessage(ticketRequest.getMessage());
@@ -43,6 +42,7 @@ public class TicketController {
         ticketDocument.set_id(utilities.generateId());
         ticketDocument.setStatus(Status.TICKET_RAISED.name());
         ticketDocument.setPostedOn(System.currentTimeMillis());
+        ticketDocument.setIssueId(ticketRequest.getIssueId());
 
         String save = ticketDao.saveTicket(ticketDocument);
         return new ResponseEntity<>(save,HttpStatus.OK);

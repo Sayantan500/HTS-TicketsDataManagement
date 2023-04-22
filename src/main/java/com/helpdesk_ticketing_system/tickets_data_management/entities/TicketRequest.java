@@ -8,6 +8,8 @@ public class TicketRequest {
     private String message;
     @JsonProperty("assigned_to")
     private String departmentId;
+    @JsonProperty("issue_id")
+    private String issueId;
 
     public TicketRequest() {
     }
@@ -26,6 +28,14 @@ public class TicketRequest {
 
     public void setDepartmentId(String departmentId) {
         this.departmentId = departmentId;
+    }
+
+    public String getIssueId() {
+        return issueId;
+    }
+
+    public void setIssueId(String issueId) {
+        this.issueId = issueId;
     }
 
     @Override
