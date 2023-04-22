@@ -3,6 +3,7 @@ package com.helpdesk_ticketing_system.tickets_data_management.persistence.mongo_
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.helpdesk_ticketing_system.tickets_data_management.persistence.Database;
+import com.helpdesk_ticketing_system.tickets_data_management.utilities.LoggingUtils;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Logger;
 
 @Component("mongodb")
 public class MongoDB<T> implements Database<T> {
@@ -71,12 +71,12 @@ public class MongoDB<T> implements Database<T> {
                 try {
                     records.add(objectMapper.readValue(document.toJson(), targetType));
                 } catch (JsonProcessingException e) {
-                    Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
+                    LoggingUtils.logError(this.getClass(),e.getClass(),e.getMessage());
                     throw new RuntimeException(e.getMessage());
                 }
             });
         } catch (Exception e){
-            Logger.getLogger(this.getClass().getName()).severe(e.getClass() + " --> " + e.getMessage());
+            LoggingUtils.logError(this.getClass(),e.getClass(),e.getMessage());
             throw e;
         }
         return records;

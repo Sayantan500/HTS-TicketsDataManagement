@@ -3,6 +3,7 @@ package com.helpdesk_ticketing_system.tickets_data_management.controllers;
 import com.helpdesk_ticketing_system.tickets_data_management.entities.*;
 import com.helpdesk_ticketing_system.tickets_data_management.exceptions_handling.exceptions.InvalidParametersException;
 import com.helpdesk_ticketing_system.tickets_data_management.persistence.repository.TicketDao;
+import com.helpdesk_ticketing_system.tickets_data_management.utilities.LoggingUtils;
 import com.helpdesk_ticketing_system.tickets_data_management.utilities.Utilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,7 +13,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/tickets")
@@ -74,7 +74,7 @@ public class TicketController {
             status = status.toUpperCase();
             Status.valueOf(status);
         }catch (IllegalArgumentException e){
-            Logger.getLogger(this.getClass().getName()).info(e.getClass() + " --> " + e.getMessage());
+            LoggingUtils.logError(this.getClass(), e.getClass(), e.getMessage());
             throw new InvalidParametersException(
                     HttpStatus.BAD_REQUEST.value(),
                     "Unknown Status provided.",
