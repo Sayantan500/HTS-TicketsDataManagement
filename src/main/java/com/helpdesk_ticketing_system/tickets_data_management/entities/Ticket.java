@@ -1,9 +1,10 @@
 package com.helpdesk_ticketing_system.tickets_data_management.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 public class Ticket {
-    @JsonProperty("message")
+    @JsonProperty("message") @Field("message")
     private String message;
 
     public Ticket() {
