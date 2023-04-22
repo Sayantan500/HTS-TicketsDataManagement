@@ -1,7 +1,6 @@
 package com.helpdesk_ticketing_system.tickets_data_management.entities;
 
-public enum Status {
-    TICKET_RAISED,
-    PROCESSING,
-    RESOLVED
+public enum HttpParameters {
+    QUERY,
+    PATH
 }
