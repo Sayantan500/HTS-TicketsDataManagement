@@ -1,5 +1,7 @@
 package com.helpdesk_ticketing_system.tickets_data_management.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.helpdesk_ticketing_system.tickets_data_management.entities.*;
 import com.helpdesk_ticketing_system.tickets_data_management.exceptions_handling.exceptions.InvalidParametersException;
 import com.helpdesk_ticketing_system.tickets_data_management.persistence.repository.TicketDao;
@@ -131,5 +133,14 @@ public class TicketController {
         if(ticketDocument==null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(ticketDocument,HttpStatus.OK);
+    }
+
+    @PatchMapping("/{ticket-id}/status")
+    public ResponseEntity<Object> updateStatusFieldOfTicket(
+            @PathVariable(name = "ticket-id") String ticketId,
+            @RequestBody String newStatusJsonStr
+    ) throws JsonProcessingException {
+        String newStatus = new ObjectMapper().readTree(newStatusJsonStr).get("new_status").textValue();
+        return ResponseEntity.ok(newStatus);
     }
 }
