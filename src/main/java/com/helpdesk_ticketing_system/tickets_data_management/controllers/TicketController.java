@@ -110,4 +110,19 @@ public class TicketController {
 
         return new ResponseEntity<>(response,HttpStatus.PARTIAL_CONTENT);
     }
+
+    @GetMapping("/{ticket-id}")
+    public ResponseEntity<TicketDocument> getTicketByItsId(@PathVariable(name = "ticket-id") String ticketId){
+        if(StringUtils.containsWhitespace(ticketId))
+            throw new InvalidParametersException(
+                    HttpStatus.BAD_REQUEST.value(),
+                    "Contains whitespace",
+                    "{ticket-id}",
+                    HttpParameters.PATH
+            );
+        TicketDocument ticketDocument = ticketDao.getTicketById(ticketId);
+        if(ticketDocument==null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(ticketDocument,HttpStatus.OK);
+    }
 }

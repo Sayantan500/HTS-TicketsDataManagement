@@ -29,4 +29,9 @@ public class TicketDaoImpl implements TicketDao{
                 deptId,status,limit,startRange,endRange, TicketDocument.class
         );
     }
+
+    @Override
+    public TicketDocument getTicketById(Object ticketId) {
+        return ticketDocumentDatabase.getById(ticketId, TicketDocument.class);
+    }
 }

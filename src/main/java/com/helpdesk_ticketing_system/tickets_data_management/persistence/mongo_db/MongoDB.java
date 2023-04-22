@@ -12,6 +12,8 @@ import org.bson.conversions.Bson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -78,6 +80,15 @@ public class MongoDB<T> implements Database<T> {
             throw e;
         }
         return records;
+    }
+
+    @Override
+    public T getById(Object ticketId, Class<T> targetType) {
+        return mongoTemplate.findOne(
+                Query.query(Criteria.where("_id").is(ticketId)),
+                targetType,
+                collectionName
+        );
     }
 
 }

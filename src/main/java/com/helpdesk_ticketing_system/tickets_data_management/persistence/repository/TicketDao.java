@@ -7,4 +7,5 @@ import java.util.List;
 public interface TicketDao {
     String saveTicket(TicketDocument ticketDocument) throws Exception;
     List<TicketDocument> getTickets(String deptId, String status, Integer limit, Long startRange, Long endRange);
+    TicketDocument getTicketById(Object ticketId);
 }
