@@ -8,6 +8,7 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
+import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -89,6 +91,16 @@ public class MongoDB<T> implements Database<T> {
                 targetType,
                 collectionName
         );
+    }
+
+    @Override
+    public boolean updateStatusField(Object ticketId, Object updatedStatus) {
+        UpdateResult result = mongoTemplate.updateFirst(
+                Query.query(Criteria.where("_id").is(ticketId)),
+                Update.update("status",updatedStatus),
+                collectionName
+        );
+        return result.wasAcknowledged();
     }
 
 }
