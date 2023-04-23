@@ -1,5 +1,7 @@
 package com.helpdesk_ticketing_system.tickets_data_management.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.helpdesk_ticketing_system.tickets_data_management.entities.*;
 import com.helpdesk_ticketing_system.tickets_data_management.exceptions_handling.exceptions.InvalidParametersException;
 import com.helpdesk_ticketing_system.tickets_data_management.persistence.repository.TicketDao;
@@ -131,5 +133,54 @@ public class TicketController {
         if(ticketDocument==null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(ticketDocument,HttpStatus.OK);
+    }
+
+    @PatchMapping("/{ticket-id}/status")
+    public ResponseEntity<Object> updateStatusFieldOfTicket(
+            @PathVariable(name = "ticket-id") String ticketId,
+            @RequestBody String newStatusJsonStr
+    ) {
+        try
+        {
+            String newStatus = new ObjectMapper().readTree(newStatusJsonStr).get("new_status").textValue();
+            Status updatedStatus = Status.valueOf(newStatus);
+            if(ticketDao.updateStatus(ticketId,updatedStatus)==true)
+                return ResponseEntity.noContent().build();
+            return ResponseEntity.internalServerError().build();
+        }
+        catch (JsonProcessingException e)
+        {
+            LoggingUtils.logError(this.getClass(),e.getClass(),e.getMessage());
+            throw new InvalidParametersException(
+                    HttpStatus.BAD_REQUEST.value(),
+                    "Invalid request body.",
+                    "request.body",
+                    HttpParameters.REQUEST_BODY
+            );
+        }
+        catch (NullPointerException e)
+        {
+            LoggingUtils.logError(this.getClass(),e.getClass(),e.getMessage());
+            throw new InvalidParametersException(
+                    HttpStatus.BAD_REQUEST.value(),
+                    "Cannot find the required field.",
+                    "request.body",
+                    HttpParameters.REQUEST_BODY
+            );
+        }
+        catch (IllegalArgumentException illegalStatusArgument)
+        {
+            LoggingUtils.logError(
+                    this.getClass(),
+                    illegalStatusArgument.getClass(),
+                    illegalStatusArgument.getMessage()
+            );
+            throw new InvalidParametersException(
+                    HttpStatus.BAD_REQUEST.value(),
+                    "Unknown Status provided",
+                    "request.body.new_status",
+                    HttpParameters.REQUEST_BODY
+            );
+        }
     }
 }

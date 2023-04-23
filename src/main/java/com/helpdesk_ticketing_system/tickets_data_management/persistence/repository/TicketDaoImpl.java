@@ -1,5 +1,6 @@
 package com.helpdesk_ticketing_system.tickets_data_management.persistence.repository;
 
+import com.helpdesk_ticketing_system.tickets_data_management.entities.Status;
 import com.helpdesk_ticketing_system.tickets_data_management.entities.TicketDocument;
 import com.helpdesk_ticketing_system.tickets_data_management.persistence.Database;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,5 +34,10 @@ public class TicketDaoImpl implements TicketDao{
     @Override
     public TicketDocument getTicketById(Object ticketId) {
         return ticketDocumentDatabase.getById(ticketId, TicketDocument.class);
+    }
+
+    @Override
+    public Boolean updateStatus(String ticketId, Status updatedStatus) {
+        return ticketDocumentDatabase.updateStatusField(ticketId,updatedStatus);
     }
 }
