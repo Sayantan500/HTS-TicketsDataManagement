@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,7 +49,14 @@ public class TicketController {
         ticketDocument.setIssueId(ticketRequest.getIssueId());
 
         String save = ticketDao.saveTicket(ticketDocument);
-        return new ResponseEntity<>(save,HttpStatus.OK);
+        String response = String.format("""
+                {
+                    "ticket_id": "%s"
+                }
+                """,save);
+        MultiValueMap<String,String> headers = new LinkedMultiValueMap<>();
+        headers.put("Content-Type",List.of("application/json;charset=utf-8"));
+        return new ResponseEntity<>(response,headers,HttpStatus.OK);
     }
 
     @GetMapping(params = {"dept","limit"})
