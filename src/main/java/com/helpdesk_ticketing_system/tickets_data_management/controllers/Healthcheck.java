@@ -3,6 +3,7 @@ package com.helpdesk_ticketing_system.tickets_data_management.controllers;
 import com.helpdesk_ticketing_system.tickets_data_management.entities.TicketDocument;
 import com.helpdesk_ticketing_system.tickets_data_management.persistence.Database;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,6 @@ public class Healthcheck {
     @GetMapping
     public ResponseEntity<Object> sendHealthStat(){
         ticketDocumentDatabase.getById("health_check", TicketDocument.class);
-        return ResponseEntity.ok(null);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
