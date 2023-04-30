@@ -115,6 +115,19 @@ public class TicketController {
                     HttpParameters.QUERY
             );
 
+        Department department;
+        try{
+            department = Department.valueOf(deptId.toUpperCase());
+        }catch (IllegalArgumentException e){
+            LoggingUtils.logError(this.getClass(), e.getClass(), e.getMessage());
+            throw new InvalidParametersException(
+                    HttpStatus.BAD_REQUEST.value(),
+                    "Unknown Department provided.",
+                    "dept",
+                    HttpParameters.QUERY
+            );
+        }
+
         // capping pagination to max limit set
         limit = Math.min(limit,MAX_PAGINATION_LIMIT);
 
@@ -149,7 +162,7 @@ public class TicketController {
 
         // fetching required documents from database
         List<TicketDocument> ticketDocumentList =
-                ticketDao.getTickets(deptId,status,limit,postedOnOfStartRange,postedOnOfEndRange);
+                ticketDao.getTickets(department.name(),status,limit,postedOnOfStartRange,postedOnOfEndRange);
 
         // creating response
         int count = ticketDocumentList.size();
