@@ -38,15 +38,54 @@ public class TicketController {
 
     @PostMapping
     public ResponseEntity<Object> saveTicket(@RequestBody TicketRequest ticketRequest) throws Exception {
+        // validating the assigned_to field,
+        // must not contain any whitespace or null value
+        // must have a valid department name (NOT case-sensitive)
+        String assigned_to = ticketRequest.getDepartmentId();
+        if(io.micrometer.common.util.StringUtils.isBlank(assigned_to)
+                || io.micrometer.common.util.StringUtils.isEmpty(assigned_to)
+                || StringUtils.containsWhitespace(assigned_to))
+            throw new InvalidParametersException(
+                    HttpStatus.BAD_REQUEST.value(),
+                    "Contains whitespace or NULL / empty value.",
+                    "assigned_to",
+                    HttpParameters.REQUEST_BODY
+            );
+        Department department ;
+        try{
+            department = Department.valueOf(assigned_to.toUpperCase());
+        }catch (IllegalArgumentException e){
+            LoggingUtils.logError(this.getClass(),e.getClass(),e.getMessage());
+            throw new InvalidParametersException(
+                    HttpStatus.BAD_REQUEST.value(),
+                    "Unknown department has been provided.",
+                    "assigned_to",
+                    HttpParameters.REQUEST_BODY
+            );
+        }
+
+        // validating the issue_id field,
+        // must not contain any whitespace or null value
+        String issueId = ticketRequest.getIssueId();
+        if(io.micrometer.common.util.StringUtils.isBlank(issueId)
+                || io.micrometer.common.util.StringUtils.isEmpty(issueId)
+                || StringUtils.containsWhitespace(issueId))
+            throw new InvalidParametersException(
+                    HttpStatus.BAD_REQUEST.value(),
+                    "Contains whitespace or NULL / empty value.",
+                    "issue_id",
+                    HttpParameters.REQUEST_BODY
+            );
+
         TicketDocument ticketDocument=new TicketDocument();
         Ticket ticket=new Ticket();
         ticket.setMessage(ticketRequest.getMessage());
-        ticketDocument.setDepartmentId(ticketRequest.getDepartmentId());
+        ticketDocument.setDepartmentId(department.name());
         ticketDocument.setTicket(ticket);
         ticketDocument.set_id(utilities.generateId());
         ticketDocument.setStatus(Status.TICKET_RAISED.name());
         ticketDocument.setPostedOn(System.currentTimeMillis());
-        ticketDocument.setIssueId(ticketRequest.getIssueId());
+        ticketDocument.setIssueId(issueId);
 
         String save = ticketDao.saveTicket(ticketDocument);
         String response = String.format("""
