@@ -7,7 +7,6 @@ import com.helpdesk_ticketing_system.tickets_data_management.utilities.LoggingUt
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Projections;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -59,14 +58,9 @@ public class MongoDB<T> implements Database<T> {
             queryFiltersList.add(Filters.lte("posted_on",endRange));
         }
 
-        List<String> fieldsToExclude = new ArrayList<>();
-        fieldsToExclude.add("ticket");
-
         Bson queryFilter = Filters.and(queryFiltersList);
-        Bson projectionConfig = Projections.exclude(fieldsToExclude);
         FindIterable<Document> findIterable = mongoTemplate.getCollection(collectionName)
                 .find(queryFilter)
-                .projection(projectionConfig)
                 .limit(limit);
         try (MongoCursor<Document> cursor = findIterable.cursor()) {
             cursor.forEachRemaining(document -> {

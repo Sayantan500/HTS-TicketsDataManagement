@@ -179,7 +179,7 @@ public class TicketController {
         else
             response = new GetTicketResponse();
 
-        return new ResponseEntity<>(response,HttpStatus.PARTIAL_CONTENT);
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
     @GetMapping("/{ticket-id}")
